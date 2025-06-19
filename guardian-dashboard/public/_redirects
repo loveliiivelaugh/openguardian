@@ -1,0 +1,4 @@
+/api/notion/webhook  https://aegis.woodwardwebdev.com/api/v1/webhook 200
+/api/email/webhook  https://aegis.woodwardwebdev.com/api/v1/webhook 200
+/api/github/webhook  https://aegis.woodwardwebdev.com/api/v1/webhook 200
+/*    /index.html   200

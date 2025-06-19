@@ -1,0 +1,39 @@
+version: '3.9'
+
+services:
+  guardian-open:
+    build: ./src
+    container_name: guardian-open
+    ports:
+      - "9876:9876"
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@host.docker.internal:5432/guardian
+      QDRANT_URL: http://host.docker.internal:6333
+      GOOGLE_GENAI_KEY: ${GOOGLE_GENAI_KEY}
+      NOTION_API_KEY: ${NOTION_API_KEY}
+      N8N_API_KEY: ${N8N_API_KEY}
+      N8N_BASE_URL: ${N8N_BASE_URL}
+      WORDPRESS_HOSTNAME: ${WORDPRESS_HOSTNAME}
+      WORDPRESS_BASIC: ${WORDPRESS_BASIC}
+      SLACK_BOT_TOKEN: ${SLACK_BOT_TOKEN}
+      HOME_ASSISTANT_ACCESS_TOKEN: ${HOME_ASSISTANT_ACCESS_TOKEN}
+
+  codegen-worker:
+    build: ./services/codegen-worker
+    container_name: guardian-codegen
+    depends_on:
+      - guardian-open
+    ports:
+      - "3535:3535"
+    environment:
+      OLLAMA_PROXY_URL: http://ollama-proxy:3456
+      GUARDIAN_API_URL: http://guardian-open:9876
+
+  ollama-proxy:
+    build: ./services/ollama-proxy
+    container_name: ollama-proxy
+    ports:
+      - "3456:3456"
+    environment:
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
+      DEFAULT_MODEL: llama3.1:latest
