@@ -10,6 +10,7 @@ const style = {
     maxWidth: "100vw",
     bgcolor: 'background.paper',
     border: '2px solid #000',
+    borderRadius: '16px',
     boxShadow: 24,
     p: 4,
 };

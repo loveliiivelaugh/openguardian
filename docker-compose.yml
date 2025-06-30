@@ -1,0 +1,85 @@
+version: '3.9'
+
+services:
+  guardian-api:
+    build: ./guardian-api
+    command: bun run dev
+    volumes:
+      - ./guardian-api:/app
+    ports:
+      - "3001:3001"
+
+  ollama-proxy:
+    build: ./ollama-proxy
+    command: bun run dev
+    volumes:
+      - ./ollama-proxy:/app
+    ports:
+      - "3002:3002"
+
+  guardian-dashboard:
+    build: ./guardian-dashboard
+    command: bun run dev
+    volumes:
+      - ./guardian-dashboard:/app
+    ports:
+      - "3000:3000"
+
+  qdrant:
+    image: qdrant/qdrant
+    container_name: qdrant
+    ports:
+      - "6333:6333"
+    volumes:
+      - qdrant_data:/qdrant/storage
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:6333"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  postgres:
+    image: postgres
+    container_name: guardian_postgres
+    environment:
+      POSTGRES_USER: guardian
+      POSTGRES_PASSWORD: guardian
+      POSTGRES_DB: guardian
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama
+    volumes:
+      - ollama_data:/root/.ollama
+    ports:
+      - "11434:11434"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  openwebui:
+    image: ghcr.io/open-webui/open-webui:main
+    ports:
+      - "8888:8080"
+    profiles: ["openwebui"]
+
+  n8n:
+    image: n8nio/n8n
+    ports:
+      - "5678:5678"
+    volumes:
+      - n8n_data:/home/node/.n8n
+    profiles: ["n8n"]
+
+volumes:
+  qdrant_data:
+  ollama_data:
+  pg_data:
+  n8n_data:

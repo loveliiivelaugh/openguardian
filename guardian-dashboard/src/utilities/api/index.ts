@@ -4,7 +4,7 @@ import { supabase } from "./supabase";
 
 // creds
 const isDev = (import.meta.env.MODE === "development");
-apiConfig.host.baseURL = isDev ? "http://localhost:5250" : import.meta.env.VITE_HOSTNAME;
+apiConfig.host.baseURL = isDev ? "http://localhost:9099" : import.meta.env.VITE_HOSTNAME;
 apiConfig.host.headers.Authorization = "Bearer " + import.meta.env.VITE_MASTER_API_KEY;
 
 const client = axios.create(apiConfig.host);

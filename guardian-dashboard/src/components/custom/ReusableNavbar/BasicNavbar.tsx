@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import { useSupabaseStore } from "@store/supabaseStore";
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import PersonIcon from '@mui/icons-material/Person';
+import ReusablePopover from "../ReusablePopover/ReusablePopover";
 
 export default function BasicNavbar() {
     const navigate = useNavigate();
@@ -21,29 +22,37 @@ export default function BasicNavbar() {
                     </ListItem>
                     {supabaseStore?.session?.user?.email}
                     <Button color="inherit" onClick={() => navigate('/dashboard')}>Home</Button>
-                    <Button color="inherit">Pricing</Button>
-                    {supabaseStore.session ? (
-                        <>
-                            <Button color="inherit" onClick={() => navigate('/dashboard')}>Dashboard</Button>
-                        </>
-                    ) : (
-                        <Button color="inherit" onClick={() => navigate('/')}>Login</Button>
-                    )}
                 </Box>
-                <TextField
-                    fullWidth
-                    variant="outlined"
-                    placeholder="🔍 Search"
-                    // value={query}
-                    // onChange={(e) => setQuery(e.target.value)}
-                    // onKeyDown={(e) => e.key === 'Enter' && fetchRelated(query)}
-                />
-                <IconButton color="inherit">
-                    <NotificationsIcon />
-                </IconButton>
-                <IconButton color="inherit">
-                    <PersonIcon />
-                </IconButton>
+                <Box sx={{ flexGrow: 1, px: 2 }}>
+                    <TextField
+                        fullWidth
+                        variant="outlined"
+                        placeholder="🔍 Search"
+                        // value={query}
+                        // onChange={(e) => setQuery(e.target.value)}
+                        // onKeyDown={(e) => e.key === 'Enter' && fetchRelated(query)}
+                    />
+                </Box>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                    <ReusablePopover
+                        popoverContent={(params: any, toggle: any) => (
+                            <Box sx={{ p: 2 }}>
+                                <Typography variant="body2" color="text.secondary">
+                                    Notifications
+                                </Typography>
+                            </Box>
+                        )}
+                    >
+                        {(_: any, toggle: any) => (
+                            <IconButton color="inherit" onClick={() => toggle()}>
+                                <NotificationsIcon />
+                            </IconButton>
+                        )}
+                    </ReusablePopover>
+                    <IconButton color="inherit" onClick={() => navigate('/profile')}>
+                        <PersonIcon />
+                    </IconButton>
+                </Box>
             </Toolbar>
         </AppBar>
     )

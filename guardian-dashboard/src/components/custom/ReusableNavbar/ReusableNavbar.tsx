@@ -5,7 +5,6 @@ import {
     ListItemButton, Toolbar, Typography
 } from '@mui/material';
 import { ThemeToggleButton } from "@theme/ThemeProvider";
-import MenuIcon from "@mui/icons-material/Menu";
 import useUtilityStore from "@store/utilityStore";
 import HamburgerMenu from "./HamburgerMenu";
 
@@ -18,18 +17,6 @@ export const Navbar = () => {
             label: "Home",
             path: "/"
         },
-        // {
-        //     label: "Payment",
-        //     path: "/payment"
-        // },
-        // {
-        //     label: "Success",
-        //     path: "/success"
-        // },
-        // {
-        //     label: "Cancel",
-        //     path: "/cancel"
-        // },
         {
             label: <ThemeToggleButton />
         },

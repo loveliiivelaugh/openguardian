@@ -1,24 +1,23 @@
 import EngineSettingsButton from "./EngineSettingsButton";
 import { Box, Button, Stack, Tooltip, Typography } from "@mui/material";
-import { motion } from "framer-motion";
 import useAgentFlowBuilder from "../useAgentFlowBuilder";
-import { useAppStore, useSimulator, useUtilityStore } from "@store/index";
-import LoadFlowModal from "@components/Custom/Agents/LoadFlowModal";
-import NodeSelectorDrawer from "@components/Custom/Agents/NodeSelectDrawer";
-import { ClearFlowButton } from "@components/Custom/Agents/Builder/ClearFlowButton";
-import { resolveFlowStructure } from "@components/Custom/Agents/lib/resolveFlowStructure";
-import { FlowExecutionDrawer } from "@components/Custom/Agents/FlowExecutionDrawer";
-import AgentAnimationSettings from "@components/Custom/Agents/Builder/AgentAnimationSettings";
-import { runCurrentFlow } from "@components/Custom/Agents/lib/runCurrentPlan";
-import { FlowExecutionResult } from "@components/Custom/Agents/Builder/FlowExecutionResult";
-import { startTutorialPopover } from "@components/Custom/Agents/StartTutorial";
+import { useAppStore, useUtilityStore } from "@store/index";
+import LoadFlowModal from "@components/custom/Agents/LoadFlowModal";
+import NodeSelectorDrawer from "@components/custom/Agents/NodeSelectDrawer";
+import { ClearFlowButton } from "@components/custom/Agents/Builder/ClearFlowButton";
+import { resolveFlowStructure } from "@components/custom/Agents/lib/resolveFlowStructure";
+import { FlowExecutionDrawer } from "@components/custom/Agents/FlowExecutionDrawer";
+import AgentAnimationSettings from "@components/custom/Agents/Builder/AgentAnimationSettings";
+import { runCurrentFlow } from "@components/custom/Agents/lib/runCurrentPlan";
+import { FlowExecutionResult } from "@components/custom/Agents/Builder/FlowExecutionResult";
+import { startTutorialPopover } from "@components/custom/Agents/StartTutorial";
 import React from "react";
 
 
-const EditorButtons = ({ setActiveTab }: { setActiveTab: (tab: number) => void }) => {
+const EditorButtons = () => {
     const appStore = useAppStore();
     const utilityStore = useUtilityStore();
-    const simulatorStore = useSimulator();
+
     const {
         nodes,
         edges,
@@ -228,27 +227,27 @@ const EditorButtons = ({ setActiveTab }: { setActiveTab: (tab: number) => void }
 
     return (
         <Box mt={2} display="flex" gap={1}>
-            <Button variant="contained" onClick={handleFlowContext}>🌳Flow Context</Button>
+            {/* <Button variant="contained" onClick={handleFlowContext}>🌳Flow Context</Button> */}
             <EngineSettingsButton />
             <Button variant="contained" onClick={loadFlow}>♻️ Load Flow</Button>
             <Button variant="contained" onClick={onAddAgent}>🤖Add Agent</Button>
             <Button variant="outlined" onClick={onSave}>💾 Save Flow</Button>
             {startTutorialPopover(1, <Button variant="outlined" onClick={addNode}>+ Add Node</Button>)}
-            <Button variant="outlined" onClick={handleAnimationSettings}>
+            {/* <Button variant="outlined" onClick={handleAnimationSettings}>
                 🎨 Animation Settings
             </Button>
             <Button variant="outlined" onClick={() => handleRunFlowClick()}>
                 ⚙️ Open Editor
-            </Button>
+            </Button> */}
             <Button variant="outlined" onClick={handleRunFlowClick}>
                 ▶️ Run Flow Steps
             </Button>
-            <Button variant="outlined" onClick={() => runCurrentFlow({ mutate: agentFlowsMutation.mutate, handleFlowContext })}>
+            {/* <Button variant="outlined" onClick={() => runCurrentFlow({ mutate: agentFlowsMutation.mutate, handleFlowContext })}>
                 🛫 Run Full Flow
             </Button>
             <Button variant="outlined" onClick={handleAssignFlow}>
                 🚀 Assign Flow
-            </Button>
+            </Button> */}
             <ClearFlowButton />
         </Box>
     )

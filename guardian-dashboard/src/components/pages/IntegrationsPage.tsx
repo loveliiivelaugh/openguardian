@@ -18,6 +18,8 @@ import EmailIcon from "@mui/icons-material/Email"
 import SlackIcon from "@mui/icons-material/Map"
 import { CardActions } from "@mui/material";
 import { FaEye, FaEyeSlash } from "react-icons/fa"
+import { AttachFile, Close } from "@mui/icons-material"
+import FormContainer from "@components/custom/forms/FormContainer"
 
 const integrationsMeta = {
   notion: {
@@ -471,16 +473,130 @@ export const IntegrationButtons = () => {
     )
 }
 
-const  IntegrationsPage = () => {
-    const params = useParams();
-    const location = useLocation();
+const DecryptedMemoriesSection = ({ showAll }: { showAll?: boolean }) => {
+    type EncryptedMemory = {
+        id: string;
+        trace_id: string;
+        encrypted_data: string;
+        iv: string;
+        tag: string;
+    };
+    type DecryptedMemory = {
+        id: string;
+        trace_id: string;
+        content: any;
+    };
+    const path = "/database/read_db/encrypted_memories?user_id=" + import.meta.env.VITE_ADMIN_USER_ID;
+    const encryptedMemoriesQuery = useQuery(queries.query(path));
+    const encryptedMemories = encryptedMemoriesQuery.data?.data || [];
+    const [decryptedMemories, setDecryptedMemories] = useState<DecryptedMemory[]>([]);
+    useEffect(() => {
+        if (!encryptedMemoriesQuery.data) return;
+        (async () => {
+            const decryptedMemories = await Promise.all(
+                encryptedMemories.map(async (mem: EncryptedMemory) => {
+                    try {
+                        const plaintext = await decrypt(
+                            mem.encrypted_data,
+                            mem.iv,
+                            mem.tag,
+                            import.meta.env.VITE_MEMORY_ENCRYPTION_KEY // base64 string
+                        );
+                
+                        return {
+                            ...mem,
+                            content: JSON.parse(plaintext) // if you encrypted JSON
+                        };
+                    } catch (err) {
+                        console.error("Failed to decrypt memory", mem.id, err);
+                        return { ...mem, content: null };
+                    }
+                })
+            );
+            setDecryptedMemories(decryptedMemories);
+        })();
+    }, [encryptedMemories]);
+    return (
+        <Grid container spacing={2}>
+                {decryptedMemories
+                    // TODO: Add Pagination
+                    .reverse()
+                    .slice(0, showAll ? decryptedMemories.length : 8)
+                    // ...
+                    .map((memory: DecryptedMemory) => (
+                        <Grid 
+                            key={memory.trace_id}
+                            size={{ xs: 12, sm: 6, md: 3, lg: 3, xl: 2 }} 
+                        >
+                            <MemoryCard2 memory={memory.content} />
+                        </Grid>
+                    ))
+                }
+        </Grid>
+    )
+};
+
+export const MemoriesPage = () => {
+    const utilityStore = useUtilityStore();
+    return (
+        <Container maxWidth="lg">
+            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                <ListItemText primary={
+                    <Typography variant="h4" fontWeight={700} gutterBottom>
+                        All Memories
+                    </Typography>
+                } secondary="AES-256-GCM Encrypted" />
+                <Box sx={{ display: "flex", gap: 2, mt: 1, height: 50 }}>
+                    <Button 
+                        variant="outlined" 
+                        color="inherit" 
+                        size="small"
+                        onClick={() => utilityStore.setModal({
+                            open: true,
+                            content: <FormContainer
+                                schema={{
+                                    table: "memory",
+                                    columns: [
+                                        {
+                                            dataType: "text",
+                                            name: "Title"
+                                        },
+                                        {
+                                            dataType: "text",
+                                            name: "Content"
+                                        },
+                                        {
+                                            dataType: "attachment",
+                                            name: "Attachment"
+                                        }
+                                    ]
+                                }}
+                                handleCancelClick={() => utilityStore.setModal({ open: false })}
+                                handleSubmit={(values: any) => {
+                                    console.log(values);
+                                    alert(`Memory created successfully, ${JSON.stringify(values.value, null, 2)}`);
+                                    utilityStore.setModal({ open: false, content: null })
+                                }}
+                            />
+                        })}
+                    >
+                        ☁️ Create Memory
+                    </Button>
+                </Box>
+            </Box>
+            <DecryptedMemoriesSection showAll />
+        </Container>
+    )
+}
+
+const IntegrationsPage = () => {
     const navigate = useNavigate();
     const encryptedMemoriesQuery = useQuery(queries.query("/database/read_db/encrypted_memories?user_id=" + import.meta.env.VITE_ADMIN_USER_ID))
     const utilityStore = useUtilityStore();
     
     const [decryptedMemories, setDecryptedMemories] = useState<any[]>([]);
     const encryptedMemories = encryptedMemoriesQuery.data?.data || [];
-    console.log("encryptedMemories: ", encryptedMemories)
+
     useEffect(() => {
         if (!encryptedMemoriesQuery.data) return;
         (async () => {
@@ -523,38 +639,90 @@ const  IntegrationsPage = () => {
     
     return (
         <Container maxWidth="lg">
-            <ListItemText primary={
-                <Typography variant="h4" fontWeight={700} gutterBottom>
-                    Recent Memories <Chip size="small" label={decryptedMemories.length} />
-                </Typography>
-            } secondary="AES-256-GCM Encrypted" />
-            {/* <Stack spacing={2} sx={{ maxHeight: "360px", overflowY: "scroll" }}>
-            reverse().slice(0, 8)
-             */}
-                <Grid container spacing={2}>
-                    {decryptedMemories.map((memory: any) => (
-                        <Grid size={{ xs: 12, sm: 6, md: 3, lg: 3, xl: 2 }} key={memory.trace_id}>
-                            <MemoryCard2 memory={memory.content} />
-                        </Grid>
-                    ))}
-                    <Grid size={12} sx={{ textAlign: "right", justifyContent: "flex-end" }}>
-                        <Breadcrumbs
-                            aria-label="breadcrumb"
-                            separator="|"
-                            // separator={<NavigateBeforeIcon fontSize="small" />}
-                        >
-                            <Typography variant="body2" color="text.secondary">Page 1</Typography>
-                            <Typography variant="body2" color="text.secondary">Page 2</Typography>
-                        </Breadcrumbs>
-                    </Grid>
-                </Grid>
-            {/* </Stack> */}
+            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                <ListItemText primary={
+                    <Typography variant="h4" fontWeight={700} gutterBottom>
+                        Recent Memories <Chip size="small" label={decryptedMemories.length} />
+                    </Typography>
+                } secondary="AES-256-GCM Encrypted" />
+                <Box sx={{ display: "flex", gap: 2, mt: 1, height: 50 }}>
+                    <Button 
+                        variant="outlined" 
+                        color="inherit" 
+                        size="small"
+                        onClick={() => navigate("/memories")}
+                    >
+                        ✨ View All
+                    </Button>
+                    <Button 
+                        variant="outlined" 
+                        color="inherit" 
+                        size="small"
+                        onClick={() => utilityStore.setModal({
+                            open: true,
+                            content: <>
+                            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                                <Typography variant="h6">
+                                    Create Memory
+                                </Typography>
+                                <Button
+                                    color="inherit" 
+                                    size="small"
+                                    onClick={() => utilityStore.setModal({ open: false })}
+                                >
+                                    <Close />
+                                </Button>
+                            </Box>
+                            <FormContainer
+                                disableHeader
+                                schema={{
+                                    table: "memory",
+                                    columns: [
+                                        {
+                                            dataType: "text",
+                                            name: "Title"
+                                        },
+                                        {
+                                            dataType: "text",
+                                            name: "Content"
+                                        },
+                                        {
+                                            dataType: "attachment",
+                                            name: "Attachment"
+                                        }
+                                    ]
+                                }}
+                                handleCancelClick={() => utilityStore.setModal({ open: false })}
+                                handleSubmit={(values: any) => {
+                                    console.log(values);
+                                    alert(`Memory created successfully, ${JSON.stringify(values.value, null, 2)}`);
+                                    utilityStore.setModal({ open: false, content: null })
+                                }}
+                            />
+                            </>
+                        })}
+                    >
+                        ☁️ Create Memory
+                    </Button>
+                </Box>
+            </Box>
+            <DecryptedMemoriesSection />
+            <Grid size={12} sx={{ textAlign: "right", justifyContent: "flex-end" }}>
+                <Breadcrumbs
+                    aria-label="breadcrumb"
+                    separator="|"
+                    // separator={<NavigateBeforeIcon fontSize="small" />}
+                >
+                    <Typography variant="body2" color="text.secondary">Page 1</Typography>
+                    <Typography variant="body2" color="text.secondary">Page 2</Typography>
+                </Breadcrumbs>
+            </Grid>
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                 <Typography variant="h4" fontWeight={700} gutterBottom>
                     Integrations
                 </Typography>
-                <Button variant="outlined" onClick={() => navigate("/integrations")}>
-                    Connect more services
+                <Button variant="outlined" color="inherit" onClick={() => navigate("/integrations")}>
+                    🔌 Connect more services
                 </Button>
             </Box>
             <hr />

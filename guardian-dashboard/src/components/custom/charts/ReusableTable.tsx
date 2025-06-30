@@ -19,7 +19,7 @@ const ReusableTable = ({ title, rows, columns, setSelected }: ReusableTableProps
                     rows={rows}
                     columns={columns.map((field: any) => ({
                         // ...field,
-                        field: field.name,
+                        field: field.field,
                         headerName: field.name,
                         width: 150,
                         editable: true,
@@ -37,7 +37,7 @@ const ReusableTable = ({ title, rows, columns, setSelected }: ReusableTableProps
                         if (setSelected) setSelected(row);
                     }}
                     rowSelectionModel={rowSelectionModel}
-                    sx={{ height: 400, width: '100%' }}
+                    sx={{ height: 400, width: '100%', backgroundColor: 'background.paper', borderRadius: 2 }}
                 />
         </Box>
     );

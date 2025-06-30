@@ -6,16 +6,18 @@ interface ViewType {
 interface AppStoreType {
     view: ViewType;
     queries: any;
+    hitlNotification: any;
     setView: (view: AppStoreType["view"]) => void;
     setQueries: (queries: any) => void;
 };
 
 const useAppStore = create<AppStoreType>((set) => ({
     view: {
-        title: "Woodward-Blog",
+        title: "GuardianAI",
         id: ""
     },
     queries: {},
+    hitlNotification: {},
     setView: (view) => set(() => ({ view })),
     setQueries: (queries: any) => set(() => ({ queries }))
 }));

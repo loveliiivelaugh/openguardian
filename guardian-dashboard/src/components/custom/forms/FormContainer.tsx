@@ -13,16 +13,41 @@ import { BasicDatePicker, BasicTimePicker } from './BasicDatePicker';
 import { useUtilityStore } from '@store/index';
 
 
-const Attachment = () => (
-    <Box sx={{}}>
-        <Typography id="demo-simple-select-label" variant="body1">
-            Progress Photo
-        </Typography>
-        <IconButton>
-            <AttachmentIcon />
-        </IconButton>
+import { useRef } from 'react';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
+
+interface AttachmentInputProps {
+  onChange: (file: File | null) => void;
+  label?: string;
+}
+
+export const AttachmentInput: React.FC<AttachmentInputProps> = ({ onChange, label = "Upload File", ...props }) => {
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    onChange(file);
+  };
+
+  return (
+    <Box {...props} sx={{ width: "100%"}}>
+      <input
+        type="file"
+        hidden
+        ref={inputRef}
+        onChange={handleFileChange}
+      />
+      <Button
+        variant="outlined"
+        color="inherit"
+        startIcon={<UploadFileIcon />}
+        onClick={() => inputRef.current?.click()}
+      >
+        {label}
+      </Button>
     </Box>
-);
+  );
+};
 
 interface SelectProps { 
     label: string, 
@@ -106,7 +131,8 @@ const buildFields: any = (fieldsArray: any[], formState: any) => fieldsArray
             time: <BasicTimePicker {...FieldsProps.Time} />,
             select: <SelectWrapper {...FieldsProps.Select} />,
             json: <TextField {...FieldsProps.Json} />,
-            attachment: <Attachment />, 
+            // attachment: <TextField {...FieldsProps.TextField} />,
+            attachment: <AttachmentInput {...FieldsProps.TextField} onChange={(file) => console.log(file)} />
         }[type])
     });
 
@@ -259,7 +285,7 @@ const FormContainer = ({ schema, disableHeader = false, ...props }: FormContaine
                     <Button variant="outlined" color="error" onClick={handleCancelClick} fullWidth>
                         Cancel
                     </Button>
-                    <Button variant="contained" color="primary" fullWidth onClick={handleSubmit}>
+                    <Button variant="contained" color="secondary" fullWidth onClick={handleSubmit}>
                         Submit
                     </Button>
                 </Box>
