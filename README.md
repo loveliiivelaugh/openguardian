@@ -10,6 +10,11 @@ Read [Getting Set Up](https://blog.woodwardwebdev.com/post/getting-set-up-tools-
 
 Read the [full tutorial series](https://blog.woodwardwebdev.com/post/the-guardian-tutorial-series) for step-by-step guides on setting up and using Guardian.
 
+[Docker]()
+[Ollama](https://github.com/ollama)
+[Qdrant]()
+[Supabase]()
+
 ---
 
 ### 🚀 What is This?
@@ -19,13 +24,13 @@ Read the [full tutorial series](https://blog.woodwardwebdev.com/post/the-guardia
 * Automate reasoning and task handling with `runLLM`
 * Store and retrieve memory with Qdrant + Supabase
 * Trigger actions via code, CLI, or agents
-* Build upon real infrastructure — not toy examples
+* Build upon real infrastructure
 
 ---
 
 ### 🧱 Included Services
 
-This project is a bundled OSS release of the core Guardian system — a modular, local-first AI infrastructure stack. It includes four key services, each designed to run independently or as part of a unified agentic automation engine.
+This project is a bundled open source release of the core Guardian system — a modular, local-first AI infrastructure stack. It includes four key services, each designed to run independently or as part of a unified agentic automation engine.
 
 | Service                                          | Description                                                                                                                                                                                 |
 | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
