@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "paths": {
+      "@api/*": ["utilities/api/*"],
+      "@store/*": ["utilities/store/*"],
+      "@theme/*": ["utilities/theme/*"],
+      "@scripts/*": ["utilities/scripts/*"],
+      "@helpers/*": ["utilities/helpers/*"],
+      "@testing/*": ["utilities/testing/*"],
+      "@components/*": ["components/*"],
+      "@custom/*": ["components/custom/*"],
+      "@mui2/*": ["components/Mui/*"],
+      "@woodward-studio/*": ["woodward-studio/*"],
+    },
+    "target": "ES2020",
+    "lib": ["DOM", "ES2020"],
+    "module": "ESNext",
+    "jsx": "react-jsx",
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "bundler",
+    "useDefineForClassFields": true,
+    "allowImportingTsExtensions": true,
+    "types": ["vitest/globals"]
+  },
+  "include": ["src"],
+  "ts-node": {
+    "compilerOptions": {
+      "module": "CommonJS"
+    }
+  }
+}

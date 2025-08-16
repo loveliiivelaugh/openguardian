@@ -1,0 +1,13 @@
+{
+    "paths": {
+        "stripe": "/api/v1/stripe/create-checkout-session"
+    },
+    "host": {
+        "baseURL": "",
+        "headers": {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": ""
+        }
+    }
+}
