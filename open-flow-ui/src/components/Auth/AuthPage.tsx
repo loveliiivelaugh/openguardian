@@ -14,7 +14,7 @@ import {
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { supabase } from "@api/supabase";
-import { AppRouter } from '@custom/routes/Router'
+import { AppRouter } from '@components/custom/routes/Router'
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");

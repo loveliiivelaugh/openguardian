@@ -1,7 +1,6 @@
 {
-  "name": "woodward-studio-fe-template",
-  "private": true,
-  "version": "0.0.0",
+  "name": "open-flow-ui",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
