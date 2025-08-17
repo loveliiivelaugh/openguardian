@@ -5,9 +5,9 @@ import {
     ListItemButton, Toolbar, Typography
 } from '@mui/material';
 import { ThemeToggleButton } from "@theme/ThemeProvider";
-import MenuIcon from "@mui/icons-material/Menu";
+// import MenuIcon from "@mui/icons-material/Menu";
 import useUtilityStore from "@store/utilityStore";
-import HamburgerMenu from "./HamburgerMenu";
+// import HamburgerMenu from "./HamburgerMenu";
 
 export const Navbar = () => {
     const utilityStore = useUtilityStore();
@@ -33,9 +33,9 @@ export const Navbar = () => {
         {
             label: <ThemeToggleButton />
         },
-        {
-            label: <HamburgerMenu />
-        }
+        // {
+        //     label: <HamburgerMenu />
+        // }
     ];
 
     return (
